@@ -1,0 +1,104 @@
+QUERY N1:
+
+SELECT COUNT(*) AS num_students YEAR(`enrolment_date`) AS `anno`
+FROM `students`
+GROUP BY YEAR(`enrolment_date`)
+ORDER BY year DESC;
+
+
+QUERY N2:
+
+SELECT `office_address`, COUNT(*) AS "insegnanti_in_questo_edificcio" 
+FROM `teachers` 
+GROUP BY `office_address` 
+HAVING COUNT(DISTINCT `id`) > 1;
+
+
+QUERY N3:
+
+SELECT `exam_id`, AVG(`vote`) AS "media_voti" 
+FROM `exam_student`
+GROUP BY `exam_id`;
+
+
+QUERY N4:
+SELECT COUNT(*) AS "corsi_per_dipartimento", `department_id` 
+FROM `degrees` 
+GROUP BY `department_id`;
+
+SEZIONE QUERY JOIN:
+
+QUERY N1:
+
+SELECT `students`.*
+FROM `students`
+JOIN `degrees` ON `students`.`degrees_id`
+ORDER BY `students`.`degrees_id` DESC
+WHERE `degrees`.`name` = "corso laurea in economia"
+     
+
+QUERY N2:
+
+SELECT `degrees`.*
+FROM `degrees`
+JOIN `deparments` ON `deparments`.`id` = `degrees`.`deparment_id`
+WHERE `degrees`.`level` = "magistrale"
+AND `deparments`.`name` = "dipartimento neuroscienza"
+
+
+QUERY N3:
+
+SELECT `courses`.*
+FROM `course_teacher`
+JOIN `courses` ON `course_id` = course_teacher`.`course_id`
+JOIN `teachers` ON `teachers`.`id` = course_teacher`.`teacher_id`
+WHERE `teachers`.`name` = "Fulvio"
+AND `teachers`.`surname` = "Amato";
+
+
+QUERY N4:
+
+SELECT 
+    `students`.`id` AS "id_student",
+    `students`.`name` AS "name_student",
+    `students`.`surname` AS "surname_student",
+
+    `degrees`.`id` AS "id_degree",
+    `degrees`.`name` AS "name_degree",  
+
+    `deparments`.`id` AS "id_deparment",
+    `deparments`.`name` AS "name_department"
+FROM `students` 
+JOIN `degrees` ON `degrees`.`id` = `students`.`degree_id`
+JOIN `departments` ON `degrees`.`department_id` = `deparments`.`id`
+ORDER BY `students`.`surname`, `students`.`name`, `students`.`id`
+
+
+
+QUERY N5:
+
+SELECT
+    `degrees`.`id` AS "id_degree",            
+    `courses`.`id` AS "id_course",
+    `teachers`.`id` AS "id_teacher",
+
+    `degrees`.`name` AS "name_degree",
+    `courses`.`name` AS "name_course",
+    `teachers`.`name` AS "name_teacher",
+    `teachers`.`surname` AS "surname_teacher",
+FROM `degrees`
+JOIN `courses` ON `degrees`.`id` = `courses`.`degree_id`
+JOIN `courses_teacher` ON `courses`.`id` = `courses_teacher`.`course_id`
+JOIN `courses_teacher` ON `teachers`.`id` = `courses_teacher`.`teacher_id`;
+
+QUERY n6:
+SELECT DISTINCT
+    `teachers`.`id` AS "id_teacher",
+    `teachers`.`name` AS "name_teacher",
+    `teachers`.`surname` AS "surname_teacher",
+FROM `degrees`
+JOIN `courses` ON `degrees`.`id` = `courses`.`degree_id`
+JOIN `courses_teacher` ON `courses`.`id` = `courses_teacher`.`course_id`
+JOIN `teachers` ON `teachers`.`id` = `courses_teacher`.`teacher_id`;
+JOIN `deparments` ON `deparments`.`id` = `degrees`.`department_id`;
+WHERE `deparments`.`name` = "Dipartimento di matematica";
